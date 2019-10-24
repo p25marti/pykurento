@@ -4,9 +4,9 @@ from examples import kurento, render_view
 
 class LoopbackHandler(tornado.web.RequestHandler):
   def on_event(self, *args, **kwargs):
-    print "received event!"
-    print args
-    print kwargs
+    print("received event!")
+    print(args)
+    print(kwargs)
 
   def get(self):
     render_view(self, "loopback")

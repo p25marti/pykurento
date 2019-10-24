@@ -34,7 +34,7 @@ application = tornado.web.Application([
 if __name__ == "__main__":
   port = int(os.environ.get("PORT", 8080))
   application.listen(port)
-  print "Webserver now listening on port %d" % port
+  print("Webserver now listening on port %d" % port)
   ioloop = tornado.ioloop.IOLoop.instance()
   signal.signal(signal.SIGINT, lambda sig, frame: ioloop.stop())
   ioloop.start()

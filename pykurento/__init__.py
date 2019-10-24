@@ -1,1 +1,1 @@
-from client import KurentoClient
+from .client import KurentoClient
