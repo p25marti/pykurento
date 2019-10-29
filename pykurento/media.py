@@ -141,8 +141,14 @@ class RtpEndpoint(SdpEndpoint):
 
   
 class WebRtcEndpoint(SdpEndpoint):
-  pass
+  def on_add_ice_candidate_event(self, fn):
+    return self.subscribe("OnIceCandidate", fn)
 
+  def add_ice_candidate(self, candidate):
+    return self.invoke("addIceCandidate", candidate=candidate)
+
+  def gather_candidates(self):
+    return self.invoke("gatherCandidates")
 
 # FILTERS
 
