@@ -1,25 +1,26 @@
 #!/usr/bin/env python
 
+import asyncio
 import sys
-from time import sleep
 import logging
 
-from pykurento import (
+from asyncKurento import (
     media,
     KurentoClient
 )
 
-# Logging
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
-root.addHandler(handler)
+logger = logging.getLogger("asyncKurento")
+logger.setLevel(logging.WARNING)
+logger.addHandler(logging.StreamHandler(sys.stdout))
 
-# Actual fun
-uri = "ws://localhost:8888/kurento"
-kurento = KurentoClient(uri)
-sleep(1)
+async def main():
+    url = "ws://localhost:8888/kurento"
+    client = await KurentoClient.build(url)
 
-pipeline = kurento.create_pipeline()
-wrtc = media.WebRtcEndpoint(pipeline)
+    pipeline = await client.create_pipeline()
+    wrtc = await media.WebRtcEndpoint.build(pipeline)
+    await wrtc.connect(wrtc)
+    await pipeline.release()
+
+
+asyncio.get_event_loop().run_until_complete(main())

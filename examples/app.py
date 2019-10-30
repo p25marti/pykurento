@@ -9,7 +9,7 @@ import tornado.web
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger("asyncKurento").setLevel(logging.WARNING)
 
 import examples.multires.handlers
 import examples.rooms.handlers
@@ -21,7 +21,6 @@ from examples import render_view
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         render_view(self, "index")
-
 
 application = tornado.web.Application([
     (r"/", IndexHandler),
@@ -42,5 +41,5 @@ if __name__ == "__main__":
     application.listen(port)
     print("Webserver now listening on port %d" % port)
     ioloop = tornado.ioloop.IOLoop.instance()
-    # signal.signal(signal.SIGINT, lambda sig, frame: ioloop.stop())
+    signal.signal(signal.SIGINT, lambda sig, frame: ioloop.stop())
     ioloop.start()
