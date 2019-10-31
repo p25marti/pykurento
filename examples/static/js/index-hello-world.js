@@ -206,10 +206,13 @@ function uiStart()
   uiSetState(UI_STARTING);
   showSpinner(uiLocalVideo, uiRemoteVideo);
 
+  const screenSharing = false
+  const videoConstraints = screenSharing? {mediaSource: 'window' || 'screen'} : true;
+
   const options = {
     localVideo: uiLocalVideo,
     remoteVideo: uiRemoteVideo,
-    mediaConstraints: { audio: true, video: true },
+    mediaConstraints: { audio: true, video: videoConstraints },
     onicecandidate: (candidate) => sendMessage({
       id: 'ADD_ICE_CANDIDATE',
       candidate: candidate,

@@ -71,7 +71,6 @@ class HelloWorldWSHandler(tornado.websocket.WebSocketHandler):
         await self.wrtc.connect(self.recorder)
         await self.recorder.record()
 
-
     async def _handle_add_ice_candidate(self, json_message):
         await self.wrtc.add_ice_candidate(json_message["candidate"])
 
