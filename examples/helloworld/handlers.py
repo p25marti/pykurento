@@ -9,6 +9,9 @@ from asyncKurento import (
 import asyncio
 import json
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 class HelloWorldHandler(tornado.web.RequestHandler):
     
@@ -17,7 +20,7 @@ class HelloWorldHandler(tornado.web.RequestHandler):
 
 class HelloWorldWSHandler(tornado.websocket.WebSocketHandler):
     async def open(self):
-        print("WebSocket opened!")
+        logger.info("WebSocket opened!")
         self.session_id = uuid.uuid4()
         self.url = "ws://localhost:8888/kurento"
         self.client = await KurentoClient.build(self.url)
@@ -36,10 +39,10 @@ class HelloWorldWSHandler(tornado.websocket.WebSocketHandler):
         elif id == "ERROR":
             await self._handle_error(json_message)
         else:
-            print(f"Found invalid message, skipping. Message: ({message}) ")
+            logger.info(f"Found invalid message, skipping. Message: ({message}) ")
 
     def on_close(self):
-        print("WebSocket closed!")
+        logger.info("WebSocket closed!")
 
     async def _handle_process_sdp_offer(self, json_message):
 
@@ -47,7 +50,7 @@ class HelloWorldWSHandler(tornado.websocket.WebSocketHandler):
         self.wrtc = await media.WebRtcEndpoint.build(self.pipeline)
         await self.wrtc.connect(self.wrtc)
 
-        print("webrtcendpoint successfully connected!")
+        logger.info("webrtc endpoint connected")
 
         await self.wrtc.on_add_ice_candidate_event(self._on_event)
 
@@ -59,10 +62,10 @@ class HelloWorldWSHandler(tornado.websocket.WebSocketHandler):
         }
         self.write_message(json.dumps(message))
 
-        print("gathering candidates")
+        logger.info("gathering candidates")
         await self.wrtc.gather_candidates()
 
-        # Recording if you want that sort of thing
+        logger.info("starting the recording")
         self.recorder = await media.RecorderEndpoint.build(
             self.pipeline, uri="file:///etc/kurento/videos/test.webm")
         await self.wrtc.connect(self.recorder)
@@ -73,11 +76,11 @@ class HelloWorldWSHandler(tornado.websocket.WebSocketHandler):
         await self.wrtc.add_ice_candidate(json_message["candidate"])
 
     async def _handle_stop(self, json_message):
-        print(f"stopping session: {self.session_id}")
+        logger.info(f"stopping session: {self.session_id}")
         await self.pipeline.release()
 
     async def _handle_error(self, json_message):
-        print(f"browser error: ({json_message})")
+        logger.warning(f"browser error: ({json_message})")
         await self.pipeline.release()
 
     def _on_event(self, event, *args, **kwargs):

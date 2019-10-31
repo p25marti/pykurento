@@ -9,7 +9,8 @@ import tornado.web
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-logging.getLogger("asyncKurento").setLevel(logging.WARNING)
+logging.getLogger("asyncKurento").setLevel(logging.CRITICAL)
+logging.getLogger("examples.helloworld.handlers").setLevel(logging.INFO)
 
 import examples.multires.handlers
 import examples.rooms.handlers

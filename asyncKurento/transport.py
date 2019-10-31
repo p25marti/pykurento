@@ -21,9 +21,7 @@ class AsyncTransport(object):
     self = AsyncTransport()
     self.url = url
     self.ws = await websockets.client.connect(url)
-    self.worker = asyncio.create_task(
-      self._response_worker()
-    )
+    self.worker = asyncio.create_task(self._response_worker())
     self.responses = []
     self.current_id = 0
     self.session_id = None
