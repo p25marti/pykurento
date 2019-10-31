@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-const ws = new WebSocket('ws://' + location.host + '/helloworldws');
+const websocketContext = window.location.protocol === "https:" === true ? "wss://" : "ws://";
+const ws = new WebSocket(websocketContext + location.host + '/helloworldws');
 
 let webRtcPeer;
 
