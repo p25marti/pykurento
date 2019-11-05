@@ -13,11 +13,13 @@ import tornado.httpserver
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 logging.getLogger("asyncKurento").setLevel(logging.CRITICAL)
 logging.getLogger("examples.helloworld.handlers").setLevel(logging.INFO)
+logging.getLogger("examples.one2one.handlers").setLevel(logging.DEBUG)
 
 import examples.multires.handlers
 import examples.rooms.handlers
 import examples.loopback.handlers
 import examples.helloworld.handlers
+import examples.one2one.handlers
 from examples import render_view
 
 
@@ -29,6 +31,8 @@ application = tornado.web.Application([
     (r"/", IndexHandler),
     (r"/helloworld", examples.helloworld.handlers.HelloWorldHandler),
     (r"/helloworldws", examples.helloworld.handlers.HelloWorldWSHandler),
+    (r"/one2one", examples.one2one.handlers.One2OneHandler),
+    (r"/one2onews", examples.one2one.handlers.One2OneWSHandler),
     (r"/loopback", examples.loopback.handlers.LoopbackHandler),
     (r"/multires", examples.multires.handlers.MultiResHandler),
     (r"/room", examples.rooms.handlers.RoomIndexHandler),

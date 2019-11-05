@@ -137,6 +137,8 @@ function handleProcessSdpAnswer(jsonMessage)
     startVideo(uiRemoteVideo);
 
     uiSetState(UI_STARTED);
+
+    updateMaxBitrate(500);
   });
 }
 
@@ -207,12 +209,30 @@ function uiStart()
   showSpinner(uiLocalVideo, uiRemoteVideo);
 
   const screenSharing = false
-  const videoConstraints = screenSharing? {mediaSource: 'window' || 'screen'} : true;
+  const screenSharingConstraints = {
+    mediaSource: 'window' || 'screen'
+  };
+
+  const resolutions = {
+    "240p":  { width: 320, height: 240, },
+    "360p":  { width: 480, height: 360, },
+    "480p":  { width: 720, height: 480, },
+    "720p":  { width: 960, height: 720, },
+    "1080p":  { width: 1440, height: 1080, },
+  }
+  const camSharingConstraints = {
+    ...resolutions["720p"],
+    framerate: 30,
+  };
+  const videoConstraints = screenSharing? screenSharingConstraints: camSharingConstraints;
 
   const options = {
     localVideo: uiLocalVideo,
     remoteVideo: uiRemoteVideo,
-    mediaConstraints: { audio: true, video: videoConstraints },
+    mediaConstraints: {
+      audio: true,
+      video: videoConstraints
+    },
     onicecandidate: (candidate) => sendMessage({
       id: 'ADD_ICE_CANDIDATE',
       candidate: candidate,
@@ -325,6 +345,7 @@ function startVideo(video)
   // This is used instead of the 'autoplay' attribute, because iOS Safari
   // requires a direct user interaction in order to play a video with audio.
   // Ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video
+  console.info('real cam settings', video.srcObject.getVideoTracks()[0].getSettings())
   video.play().catch((err) => {
     if (err.name === 'NotAllowedError') {
       console.error("[start] Browser doesn't allow playing video: " + err);
@@ -342,3 +363,39 @@ $(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
   event.preventDefault();
   $(this).ekkoLightbox();
 });
+
+
+/**
+ * Utils for setting max bandwidth
+ */
+function updateMaxBitrate(bitrateInt) {
+
+  // In Chrome, use RTCRtpSender.setParameters to change bandwidth without
+  // (local) renegotiation. Note that this will be within the envelope of
+  // the initial maximum bandwidth negotiated via SDP.
+  if ((adapter.browserDetails.browser === 'chrome' ||
+       (adapter.browserDetails.browser === 'firefox' &&
+        adapter.browserDetails.version >= 64)) &&
+      'RTCRtpSender' in window &&
+      'setParameters' in window.RTCRtpSender.prototype) {
+
+    const senders = webRtcPeer.peerConnection.getSenders();
+    let videoSender; 
+    senders.forEach((sender) => {
+      if (sender.track["kind"] === "video") {
+        videoSender = sender;
+      }
+    })
+    if (videoSender) {
+      const parameters = videoSender.getParameters()
+      if (!parameters.encodings) {
+        parameters.encodings = [{}];
+      }
+      parameters.encodings[0].maxBitrate = bitrateInt * 1000;
+      videoSender.setParameters(parameters)
+      .then(() => {
+        console.log(`bitrate has been capped to ${bitrateInt}kbps`)
+      })
+    }
+  }
+}
