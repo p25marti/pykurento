@@ -55,7 +55,7 @@ class MediaPipeline(MediaObject):
 class MediaElement(MediaObject):
 
   @classmethod
-  async def build(self, parent, **args):
+  async def build(cls, parent, **args):
     args["mediaPipeline"] = parent.get_pipeline().id
     return await super().build(parent, **args)
 
@@ -173,6 +173,11 @@ class ZBarFilter(MediaElement):
 
 
 # HUBS
+class HubPort(MediaElement):
+  @classmethod
+  async def build(cls, parent, hub, **args):
+    args["hub"] = hub.id
+    return await super().build(parent, **args)
 
 class Composite(MediaElement):
   pass
