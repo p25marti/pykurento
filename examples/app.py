@@ -11,7 +11,7 @@ import tornado.httpserver
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-logging.getLogger("asyncKurento").setLevel(logging.CRITICAL)
+logging.getLogger("OwlKurentoClient").setLevel(logging.CRITICAL)
 logging.getLogger("examples.helloworld.handlers").setLevel(logging.INFO)
 logging.getLogger("examples.one2one.handlers").setLevel(logging.DEBUG)
 

@@ -1,5 +1,5 @@
-from asyncKurento import media
-from asyncKurento.transport import AsyncTransport
+from OwlKurentoClient import media
+from OwlKurentoClient.transport import AsyncTransport
 
 class KurentoClient(object):
 

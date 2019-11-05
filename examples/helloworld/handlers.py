@@ -1,7 +1,7 @@
 import tornado.web
 import tornado.websocket
 from examples import render_view
-from asyncKurento import (
+from OwlKurentoClient import (
     KurentoClient,
     media
 )

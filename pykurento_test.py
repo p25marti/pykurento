@@ -4,12 +4,12 @@ import asyncio
 import sys
 import logging
 
-from asyncKurento import (
+from OwlKurentoClient import (
     media,
     KurentoClient
 )
 
-logger = logging.getLogger("asyncKurento")
+logger = logging.getLogger("OwlKurentoClient")
 logger.setLevel(logging.WARNING)
 logger.addHandler(logging.StreamHandler(sys.stdout))
 
