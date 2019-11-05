@@ -15,9 +15,6 @@ logging.getLogger("OwlKurentoClient").setLevel(logging.CRITICAL)
 logging.getLogger("examples.helloworld.handlers").setLevel(logging.INFO)
 logging.getLogger("examples.one2one.handlers").setLevel(logging.DEBUG)
 
-import examples.multires.handlers
-import examples.rooms.handlers
-import examples.loopback.handlers
 import examples.helloworld.handlers
 import examples.one2one.handlers
 from examples import render_view
@@ -33,12 +30,6 @@ application = tornado.web.Application([
     (r"/helloworldws", examples.helloworld.handlers.HelloWorldWSHandler),
     (r"/one2one", examples.one2one.handlers.One2OneHandler),
     (r"/one2onews", examples.one2one.handlers.One2OneWSHandler),
-    (r"/loopback", examples.loopback.handlers.LoopbackHandler),
-    (r"/multires", examples.multires.handlers.MultiResHandler),
-    (r"/room", examples.rooms.handlers.RoomIndexHandler),
-    (r"/room/(?P<room_id>\d*)", examples.rooms.handlers.RoomHandler),
-    (r"/room/(?P<room_id>[^/]*)/subscribe/(?P<from_participant_id>[^/]*)/(?P<to_participant_id>[^/]*)",
-        examples.rooms.handlers.SubscribeToParticipantHandler),
     (r'/static/(.*)', tornado.web.StaticFileHandler,
         {'path': os.path.join(os.path.dirname(__file__), "static")}),
 ], debug=True)
