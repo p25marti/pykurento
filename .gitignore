@@ -3,3 +3,4 @@
 dist/
 pykurento.egg-info/
 rooms.db
+.vscode/
